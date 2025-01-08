@@ -6,18 +6,16 @@ on:
   
 jobs:
 
-  # Run this only on main branch
-  anchore-scan:
-    uses: ./.github/workflows/anchore-scan.yml
-    if: github.ref == 'refs/heads/main'
+  # NOTE: 'anchore-scan' is disabled for now since it is only supported on
+  #       public repos with the free GitHub plan. 
+  #anchore-scan:
+  #  uses: ./.github/workflows/anchore-scan.yml
+  #  if: github.ref == 'refs/heads/main'
 
-  # Run this only on main branch
   tag-container-push:
     uses: ./.github/workflows/tag-container-push.yml
-    needs: [anchore-scan]
+    # NOTE: The dependency on 'anchore-scan' has been disabled for now; see
+    #       the above comment regarding 'anchore-scan' for further info.
+    #needs: [anchore-scan]
     if: github.ref == 'refs/heads/main'
-
-  # In the future consider a 'build-and-test' job which runs on all branches:
-  # build-and-test:
-  #  uses: ./.github/workflows/build-and-test.yml
 
