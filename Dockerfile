@@ -1,5 +1,11 @@
+
+# 'build' target: Create image with rclone and s3cmd installed
+
 # Use Ubuntu as the base image
-FROM ubuntu:latest
+FROM ubuntu:latest AS build
+
+# rclone version to use (see https://rclone.org/downloads/)
+ENV RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
 
 # Update package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,22 +21,28 @@ WORKDIR /tmp
 # Install required software...
 
 # Install rclone
-RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
-    unzip rclone-current-linux-amd64.zip
-WORKDIR /tmp/rclone-*-linux-amd64
-RUN cp rclone /usr/bin/ && \
-    chown root:root /usr/bin/rclone && \
-    chmod 755 /usr/bin/rclone && \
-    mkdir -p /usr/local/share/man/man1 && \
-    cp rclone.1 /usr/local/share/man/man1/ && \
-    mandb
+RUN curl -O https://downloads.rclone.org/v1.68.2/${RCLONE_VERSION}.zip
+RUN unzip ${RCLONE_VERSION}.zip
+WORKDIR /tmp/${RCLONE_VERSION}
+RUN cp rclone /usr/bin/
+RUN chown root:root /usr/bin/rclone
+RUN chmod 755 /usr/bin/rclone
+RUN mkdir -p /usr/local/share/man/man1
+RUN cp rclone.1 /usr/local/share/man/man1/
+RUN mandb
 WORKDIR /tmp
 
 # Clean up
-RUN rm -rf rclone-*-linux-amd64 rclone-current-linux-amd64.zip
+RUN rm -rf ${RCLONE_VERSION} ${RCLONE_VERSION}.zip
 
 # Set the final working directory
 WORKDIR /app
+
+
+
+# default target: Add config files to 'build' target
+
+FROM build
 
 # Dynamically configuring s3cmd/rclone inside the Docker container by passing environment variables and generating the .s3cfg file at runtime. Need to check with Tom regarding this
 
@@ -45,12 +57,3 @@ RUN chmod +x /app/entrypoint.sh
 
 # Set entrypoint for runtime configuration
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Amali to provide shell commands here after 'RUN'. Note that you can't change directory
-# with 'cd', rather you should use 'WORKDIR' instead. Below is an example set of
-# instructions to install 'wget', change directory to '/an/example/dir', invoke a shell
-# script 'example.sh', and copy a file from the repo into the container:
-#    RUN apt-get install wget
-#    WORKDIR /an/example/dir
-#    RUN sh example.sh
-#    COPY file.txt /target/dir/for/file/
