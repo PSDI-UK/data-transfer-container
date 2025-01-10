@@ -1,5 +1,5 @@
 
-# 'build' target: Create image with rclone and s3cmd installed
+# 'build' target: Create image with rclone, s3cmd, cyberduck CLI and restic installed
 
 # Use Ubuntu as the base image
 FROM ubuntu:latest AS build
@@ -10,11 +10,14 @@ ENV RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
 # Update package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
     s3cmd \
+    restic \
     curl \
     unzip \
     fuse \
     python3-pip \
-    man-db
+    man-db \
+    gnupg \
+    ca-certificates
     
 # Set up a temporary directory for installations
 WORKDIR /tmp
@@ -35,6 +38,12 @@ WORKDIR /tmp
 
 # Clean up
 RUN rm -rf ${RCLONE_VERSION} ${RCLONE_VERSION}.zip
+
+# Install Cyberduck CLI (Duck)
+RUN echo "deb https://s3.amazonaws.com/repo.deb.cyberduck.io stable main" | tee /etc/apt/sources.list.d/cyberduck.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FE7097963FEFBE72 && \
+    apt-get update && \
+    apt-get install -y duck
 
 # Set the final working directory
 WORKDIR /app
