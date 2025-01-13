@@ -5,7 +5,7 @@
 FROM ubuntu:latest AS build
 
 # rclone version to use (see https://rclone.org/downloads/)
-ENV RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
+ENV INSTALL_RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
 
 # Update package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
@@ -25,9 +25,9 @@ WORKDIR /tmp
 # Install required software...
 
 # Install rclone
-RUN curl -O https://downloads.rclone.org/v1.68.2/${RCLONE_VERSION}.zip
-RUN unzip ${RCLONE_VERSION}.zip
-WORKDIR /tmp/${RCLONE_VERSION}
+RUN curl -O https://downloads.rclone.org/v1.68.2/${INSTALL_RCLONE_VERSION}.zip
+RUN unzip ${INSTALL_RCLONE_VERSION}.zip
+WORKDIR /tmp/${INSTALL_RCLONE_VERSION}
 RUN cp rclone /usr/bin/
 RUN chown root:root /usr/bin/rclone
 RUN chmod 755 /usr/bin/rclone
@@ -37,7 +37,7 @@ RUN mandb
 WORKDIR /tmp
 
 # Clean up
-RUN rm -rf ${RCLONE_VERSION} ${RCLONE_VERSION}.zip
+RUN rm -rf ${INSTALL_RCLONE_VERSION} ${INSTALL_RCLONE_VERSION}.zip
 
 # Install Cyberduck CLI (Duck)
 RUN echo "deb https://s3.amazonaws.com/repo.deb.cyberduck.io stable main" | tee /etc/apt/sources.list.d/cyberduck.list && \
