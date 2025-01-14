@@ -49,9 +49,9 @@ RUN echo "deb https://s3.amazonaws.com/repo.deb.cyberduck.io stable main" | tee 
     apt-get install -y duck
 
 # Install AWS CLI
-RUN "curl https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscliv2.zip" && \
+RUN curl "https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
-    sudo ./aws/install && \
+    ./aws/install && \
     rm -rf awscliv2.zip aws
     
 # Set the final working directory
