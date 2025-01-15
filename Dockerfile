@@ -1,11 +1,13 @@
 
-# 'build' target: Create image with rclone, s3cmd, cyberduck CLI and restic installed
+# 'build' target: Create image with rclone, s3cmd, cyberduck CLI, AWS CLI and restic installed
 
 # Use Ubuntu as the base image
 FROM ubuntu:latest AS build
 
 # rclone version to use (see https://rclone.org/downloads/)
 ENV INSTALL_RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
+# aws cli version to use (see https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+ENV INSTALL_AWSCLI_VERSION='awscli-exe-linux-x86_64'
 
 # Update package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
@@ -17,7 +19,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     man-db \
     gnupg \
-    ca-certificates
+    ca-certificates \
+    less
     
 # Set up a temporary directory for installations
 WORKDIR /tmp
@@ -45,6 +48,12 @@ RUN echo "deb https://s3.amazonaws.com/repo.deb.cyberduck.io stable main" | tee 
     apt-get update && \
     apt-get install -y duck
 
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+    
 # Set the final working directory
 WORKDIR /app
 
@@ -59,7 +68,8 @@ FROM build
 # Copy configuration scripts for s3cmd and rclone into the image
 COPY configure-s3cmd.sh /app/configure-s3cmd.sh
 COPY configure-rclone.sh /app/configure-rclone.sh
-RUN chmod +x /app/configure-s3cmd.sh /app/configure-rclone.sh
+COPY configure-awscli.sh /app/configure-awscli.sh
+RUN chmod +x /app/configure-s3cmd.sh /app/configure-rclone.sh /app/configure-awscli.sh
 
 # Copy entrypoint script for the container
 COPY entrypoint.sh /app/entrypoint.sh
