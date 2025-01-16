@@ -71,6 +71,10 @@ COPY configure-rclone.sh /app/configure-rclone.sh
 COPY configure-awscli.sh /app/configure-awscli.sh
 RUN chmod +x /app/configure-s3cmd.sh /app/configure-rclone.sh /app/configure-awscli.sh
 
+# Copy the s3.cyberduckprofile to the Cyberduck profiles directory
+RUN mkdir -p /root/.duck/profiles
+COPY S3-deprecatedprofile.cyberduckprofile /root/.duck/profiles/S3-deprecatedprofile.cyberduckprofile
+
 # Copy entrypoint script for the container
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
