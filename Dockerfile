@@ -60,18 +60,7 @@ RUN curl "https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscli
 # Set the final working directory
 WORKDIR /app
 
-# Create non-root user
-ARG UID=1000
-ARG GID=1000
-ARG USERNAME=dsyncuser
 
-RUN groupadd -g $GID $USERNAME && \
-    useradd -m -u $UID -g $GID -s /bin/bash $USERNAME
-
-RUN apt update -y && apt upgrade -y
-
-# Switch to non-root user
-USER $UID
 
 # default target: Add config files to 'build' target
 
