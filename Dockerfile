@@ -8,6 +8,10 @@ FROM ubuntu:latest AS build
 ENV INSTALL_RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
 # aws cli version to use (see https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 ENV INSTALL_AWSCLI_VERSION='awscli-exe-linux-x86_64'
+# Set the default rclone config path
+ENV RCLONE_CONFIG=/app/.config/rclone/rclone.conf
+# Set the default s3cmd config path
+ENV S3CMD_CONFIG=/app/.s3cfg
 
 # Update package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
