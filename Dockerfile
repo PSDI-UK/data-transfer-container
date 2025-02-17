@@ -12,6 +12,8 @@ ENV INSTALL_AWSCLI_VERSION='awscli-exe-linux-x86_64'
 ENV RCLONE_CONFIG=/app/.config/rclone/rclone.conf
 # Set the default s3cmd config path
 ENV S3CMD_CONFIG=/app/.s3cfg
+# Set the environment variables for AWS CLI
+ENV AWS_SHARED_CREDENTIALS_FILE=/app/.aws/credentials
 
 # Update package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
