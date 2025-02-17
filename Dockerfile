@@ -32,7 +32,6 @@ RUN curl -O https://downloads.rclone.org/v1.68.2/${INSTALL_RCLONE_VERSION}.zip
 RUN unzip ${INSTALL_RCLONE_VERSION}.zip
 WORKDIR /tmp/${INSTALL_RCLONE_VERSION}
 RUN cp rclone /usr/bin/
-RUN chown root:root /usr/bin/rclone
 RUN chmod 755 /usr/bin/rclone
 RUN mkdir -p /usr/local/share/man/man1
 RUN cp rclone.1 /usr/local/share/man/man1/
@@ -72,8 +71,8 @@ COPY configure-awscli.sh /app/configure-awscli.sh
 RUN chmod +x /app/configure-s3cmd.sh /app/configure-rclone.sh /app/configure-awscli.sh
 
 # Copy the s3.cyberduckprofile to the Cyberduck profiles directory
-RUN mkdir -p /root/.duck/profiles
-COPY S3-deprecatedprofile.cyberduckprofile /root/.duck/profiles/S3-deprecatedprofile.cyberduckprofile
+RUN mkdir -p /app/.duck/profiles
+COPY S3-deprecatedprofile.cyberduckprofile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile
 
 # Copy entrypoint script for the container
 COPY entrypoint.sh /app/entrypoint.sh
