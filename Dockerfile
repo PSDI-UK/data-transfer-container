@@ -60,13 +60,24 @@ RUN curl "https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscli
 # Set the final working directory
 WORKDIR /app
 
+# Create non-root user
+ARG UID=1000
+ARG GID=1000
+ARG USERNAME=dsyncuser
 
+RUN groupadd -g $GID $USERNAME && \
+    useradd -m -u $UID -g $GID -s /bin/bash $USERNAME
+
+RUN apt update -y && apt upgrade -y
+
+# Switch to non-root user
+USER $UID
 
 # default target: Add config files to 'build' target
 
 FROM build
 
-# Dynamically configuring s3cmd/rclone inside the Docker container by passing environment variables and generating the .s3cfg file at runtime. Need to check with Tom regarding this
+# Dynamically configuring s3cmd/rclone inside the Docker container by passing environment variables and generating the .s3cfg file at runtime.
 
 # Copy configuration scripts for s3cmd and rclone into the image
 COPY configure-s3cmd.sh /app/configure-s3cmd.sh
