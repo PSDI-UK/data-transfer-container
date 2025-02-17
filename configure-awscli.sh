@@ -10,10 +10,10 @@ fi
 AWS_ENDPOINT_URL="https://s3.echo.stfc.ac.uk"
 
 # Configure AWS CLI
-mkdir -p ~/.aws
+mkdir -p /app/.aws
 
 # Write credentials file
-cat > ~/.aws/credentials <<EOL
+cat > /app/.aws/credentials <<EOL
 [default]
 aws_access_key_id = $ACCESS_KEY
 aws_secret_access_key = $SECRET_KEY
