@@ -4,6 +4,15 @@
 # Use Ubuntu as the base image
 FROM ubuntu:latest AS build
 
+# Define non-root user variables
+ARG UID=1002
+ARG GID=1002
+ARG USERNAME=appuser
+
+# Create the non-root user
+RUN groupadd -g $GID $USERNAME && \
+    useradd -m -u $UID -g $GID -s /bin/bash $USERNAME
+
 # rclone version to use (see https://rclone.org/downloads/)
 ENV INSTALL_RCLONE_VERSION='rclone-v1.68.2-linux-amd64'
 # aws cli version to use (see https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
@@ -62,11 +71,17 @@ RUN curl "https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscli
 # Set the final working directory
 WORKDIR /app
 
+# Change ownership of /app directory to non-root user
+RUN chown -R $USERNAME:$USERNAME /app
+
 
 
 # default target: Add config files to 'build' target
 
 FROM build
+
+# Switch back to root for final setup
+USER root
 
 # Dynamically configuring s3cmd/rclone inside the Docker container by passing environment variables and generating the .s3cfg file at runtime.
 
@@ -83,6 +98,12 @@ COPY S3-deprecatedprofile.cyberduckprofile /app/.duck/profiles/S3-deprecatedprof
 # Copy entrypoint script for the container
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+
+# Ensure non-root user owns /app
+RUN chown -R $USERNAME:$USERNAME /app
+
+# Switch to non-root user
+USER $USERNAME
 
 # Set entrypoint for runtime configuration
 ENTRYPOINT ["/app/entrypoint.sh"]
