@@ -7,10 +7,10 @@ if [ -z "$ACCESS_KEY" ] || [ -z "$SECRET_KEY" ]; then
 fi
 
 # Create the .s3cfg configuration directory if it doesn't exist
-mkdir -p /root
+mkdir -p /app
 
 # Write the configuration file
-cat > /root/.s3cfg <<EOL
+cat > /app/.s3cfg <<EOL
 [default]
 access_key = ${ACCESS_KEY}
 access_token =
@@ -94,4 +94,4 @@ website_error =
 website_index = index.html
 EOL
 
-echo ".s3cfg file has been successfully created at /root/.s3cfg"
+echo ".s3cfg file has been successfully created at /app/.s3cfg"

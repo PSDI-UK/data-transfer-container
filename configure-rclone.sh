@@ -7,10 +7,10 @@ if [ -z "$ACCESS_KEY" ] || [ -z "$SECRET_KEY" ]; then
 fi
 
 # Create the rclone configuration directory if it doesn't exist
-mkdir -p /root/.config/rclone
+mkdir -p /app/.config/rclone
 
 # Dynamically create the rclone configuration file with hard-coded values
-cat > /root/.config/rclone/rclone.conf <<EOL
+cat > /app/.config/rclone/rclone.conf <<EOL
 [ceph-remote]
 type = s3
 provider = Ceph
@@ -19,4 +19,4 @@ secret_access_key = ${SECRET_KEY}
 endpoint = https://s3.echo.stfc.ac.uk
 EOL
 
-echo "rclone configuration file created successfully at /root/.config/rclone/rclone.conf"
+echo "rclone configuration file created successfully at /app/.config/rclone/rclone.conf"
