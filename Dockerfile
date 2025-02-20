@@ -43,18 +43,14 @@ WORKDIR /tmp
 # Install required software...
 
 # Install rclone
-RUN curl -O https://downloads.rclone.org/v1.68.2/${INSTALL_RCLONE_VERSION}.zip
-RUN unzip ${INSTALL_RCLONE_VERSION}.zip
-WORKDIR /tmp/${INSTALL_RCLONE_VERSION}
-RUN cp rclone /usr/bin/
-RUN chmod 755 /usr/bin/rclone
-RUN mkdir -p /usr/local/share/man/man1
-RUN cp rclone.1 /usr/local/share/man/man1/
-RUN mandb
-WORKDIR /tmp
-
-# Clean up
-RUN rm -rf ${INSTALL_RCLONE_VERSION} ${INSTALL_RCLONE_VERSION}.zip
+RUN curl -O https://downloads.rclone.org/v1.68.2/${INSTALL_RCLONE_VERSION}.zip && \
+    unzip ${INSTALL_RCLONE_VERSION}.zip && \
+    cp ${INSTALL_RCLONE_VERSION}/rclone /usr/bin/ && \
+    chmod 755 /usr/bin/rclone && \
+    mkdir -p /usr/local/share/man/man1 && \
+    cp ${INSTALL_RCLONE_VERSION}/rclone.1 /usr/local/share/man/man1/ && \
+    mandb && \
+    rm -rf ${INSTALL_RCLONE_VERSION} ${INSTALL_RCLONE_VERSION}.zip
 
 # Install Cyberduck CLI (Duck)
 RUN echo "deb https://s3.amazonaws.com/repo.deb.cyberduck.io stable main" | tee /etc/apt/sources.list.d/cyberduck.list && \
