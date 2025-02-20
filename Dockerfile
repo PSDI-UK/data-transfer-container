@@ -2,7 +2,7 @@
 # 'build' target: Create image with rclone, s3cmd, cyberduck CLI, AWS CLI and restic installed
 
 # Use Ubuntu as the base image
-FROM ubuntu:latest AS build
+FROM ubuntu:latest
 
 # Define non-root user variables
 ARG UID=1002
@@ -70,18 +70,6 @@ RUN curl "https://awscli.amazonaws.com/${INSTALL_AWSCLI_VERSION}.zip" -o "awscli
     
 # Set the final working directory
 WORKDIR /app
-
-# Change ownership of /app directory to non-root user
-RUN chown -R $USERNAME:$USERNAME /app
-
-
-
-# default target: Add config files to 'build' target
-
-FROM build
-
-# Switch back to root for final setup
-USER root
 
 # Dynamically configuring s3cmd/rclone inside the Docker container by passing environment variables and generating the .s3cfg file at runtime.
 
