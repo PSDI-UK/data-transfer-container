@@ -4,7 +4,11 @@
 # Use Ubuntu as the base image
 FROM ubuntu:latest
 
-# Define non-root user variables
+# Define non-root user variables - specified at build time.
+# These define the user owning the app and the default user in the
+# container when it is run
+# NOTE: This should not be 1000 otherwise the creation of the user
+# below will fail (since 1000 is already a user in Ubuntu)
 ARG UID=1002
 ARG GID=1002
 ARG USERNAME=appuser
@@ -73,7 +77,8 @@ WORKDIR /app
 COPY configure-s3cmd.sh /app/configure-s3cmd.sh
 COPY configure-rclone.sh /app/configure-rclone.sh
 COPY configure-awscli.sh /app/configure-awscli.sh
-RUN chmod +x /app/configure-s3cmd.sh /app/configure-rclone.sh /app/configure-awscli.sh
+# Give all users execute permission for configuration scripts
+RUN chmod a+x /app/configure-s3cmd.sh /app/configure-rclone.sh /app/configure-awscli.sh
 
 # Copy the s3.cyberduckprofile to the Cyberduck profiles directory
 RUN mkdir -p /app/.duck/profiles
@@ -81,10 +86,16 @@ COPY S3-deprecatedprofile.cyberduckprofile /app/.duck/profiles/S3-deprecatedprof
 
 # Copy entrypoint script for the container
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+# Give all users execute permission for entrypoint script
+RUN chmod a+x /app/entrypoint.sh
 
 # Ensure non-root user owns /app
 RUN chown -R $USERNAME:$USERNAME /app
+# But allow any user in the container to do access the /app directory.
+# This is required so that any (non-root) user ID can execute the above entrypoint
+# and configuration scripts (which create the configuration files for the data
+# transfer software when the container is started)
+RUN chmod a+rwx /app
 
 # Switch to non-root user
 USER $USERNAME
