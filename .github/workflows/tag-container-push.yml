@@ -62,12 +62,13 @@ jobs:
           GIT_USERNAME: ${{ github.actor }}
           GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker build API
-        id: build_docker_image
         env:
           DOCKER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer:${{ steps.tag_version.outputs.new_tag }}"
         run: |
           docker build -t $DOCKER_IMAGE_NAME .
           docker push $DOCKER_IMAGE_NAME
+	  # Make DOCKER_IMAGE_NAME available beyond this step
+	  echo "DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME" >> $GITHUB_ENV
       - name: Install Apptainer
         run: |
           sudo apt install -y software-properties-common
@@ -79,6 +80,6 @@ jobs:
           APPTAINER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer-sif:${{ steps.tag_version.outputs.new_tag }}"
         run: |
           docker images
-          echo ${{ env.DOCKER_IMAGE_NAME }}
-          apptainer build container.sif docker-daemon://${{ env.DOCKER_IMAGE_NAME }}
+          echo $DOCKER_IMAGE_NAME
+          apptainer build container.sif docker-daemon://$DOCKER_IMAGE_NAME
           apptainer push container.sif oras://$APPTAINER_IMAGE_NAME
