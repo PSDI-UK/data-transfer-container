@@ -79,5 +79,7 @@ jobs:
           APPTAINER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer-sif:${{ steps.tag_version.outputs.new_tag }}"
         run: |
           docker images
-          apptainer build container.sif docker-daemon://${{ steps.build_docker_image.DOCKER_IMAGE_NAME}}
+          echo ${{ steps.build_docker_image.DOCKER_IMAGE_NAME }}
+          echo "${{ steps.build_docker_image.DOCKER_IMAGE_NAME }}"
+          apptainer build container.sif "docker-daemon://${{ steps.build_docker_image.DOCKER_IMAGE_NAME }}"
           apptainer push container.sif oras://$APPTAINER_IMAGE_NAME
