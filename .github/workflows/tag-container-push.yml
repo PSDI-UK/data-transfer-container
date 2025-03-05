@@ -65,7 +65,7 @@ jobs:
         env:
           DOCKER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer:${{ steps.tag_version.outputs.new_tag }}"
         run: |
-          docker build -t $IMAGE_NAME .
+          docker build -t $DOCKER_IMAGE_NAME .
           docker push $DOCKER_IMAGE_NAME
       - name: Install Apptainer
         run: |
