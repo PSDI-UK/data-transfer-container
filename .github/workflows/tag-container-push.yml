@@ -77,5 +77,5 @@ jobs:
         env: 
           IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer-sif:${{ steps.tag_version.outputs.new_tag }}"
         run: |
-	  apptainer build container.sif docker-daemon://data-transfer:latest
+          apptainer build container.sif docker-daemon://data-transfer:latest
           apptainer push container.sif "oras://$IMAGE_NAME"
