@@ -67,8 +67,8 @@ jobs:
         run: |
           docker build -t $DOCKER_IMAGE_NAME .
           docker push $DOCKER_IMAGE_NAME
-	  # Make DOCKER_IMAGE_NAME available beyond this step
-	  echo "DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME" >> $GITHUB_ENV
+          # Make DOCKER_IMAGE_NAME available beyond this step
+          echo "DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME" >> $GITHUB_ENV
       - name: Install Apptainer
         run: |
           sudo apt install -y software-properties-common
