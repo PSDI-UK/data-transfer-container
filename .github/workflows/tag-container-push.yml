@@ -26,8 +26,6 @@ run-name: tag-container-push
 
 on:
   workflow_call:
-  # ADDED FOR TESTING PURPOSES
-  push:
   
 jobs:
   tag-container-push:
