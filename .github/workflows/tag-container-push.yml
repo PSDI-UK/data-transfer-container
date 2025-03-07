@@ -26,6 +26,8 @@ run-name: tag-container-push
 
 on:
   workflow_call:
+  # For testing purposes
+  push:
   
 jobs:
   tag-container-push:
@@ -67,8 +69,6 @@ jobs:
         run: |
           docker build -t $DOCKER_IMAGE_NAME .
           docker push $DOCKER_IMAGE_NAME
-          # Make DOCKER_IMAGE_NAME environment variable in scope outwith this step - it is used in a later step
-          echo "DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME" >> $GITHUB_ENV
       - name: Install Apptainer
         run: |
           sudo apt install -y software-properties-common
@@ -76,7 +76,8 @@ jobs:
           sudo apt install -y apptainer
           apptainer --version
       - name: Build Apptainer image from the Docker image
-        env: 
+        env:
+          DOCKER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer:${{ steps.tag_version.outputs.new_tag }}"
           APPTAINER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer-sif:${{ steps.tag_version.outputs.new_tag }}"
         run: |
           apptainer build container.sif docker-daemon://$DOCKER_IMAGE_NAME
