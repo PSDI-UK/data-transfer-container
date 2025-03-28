@@ -17,5 +17,6 @@ jobs:
     # NOTE: The dependency on 'anchore-scan' has been disabled for now; see
     #       the above comment regarding 'anchore-scan' for further info.
     #needs: [anchore-scan]
-    if: github.ref == 'refs/heads/main'
+    #TODO: Restore this after testing is complete
+    #if: github.ref == 'refs/heads/main'
 

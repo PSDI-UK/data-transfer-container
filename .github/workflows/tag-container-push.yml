@@ -69,11 +69,12 @@ jobs:
         run: |
           docker build -t $DOCKER_IMAGE_NAME:$TAG .
           docker push $DOCKER_IMAGE_NAME:$TAG
-          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
-            docker tag $DOCKER_IMAGE_NAME:$TAG $DOCKER_IMAGE_NAME:latest
-            docker push $DOCKER_IMAGE_NAME:latest
-          fi
+          #TODO: Restore this if block after testing is complete
+          #if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
+          docker tag $DOCKER_IMAGE_NAME:$TAG $DOCKER_IMAGE_NAME:latest
+          docker push $DOCKER_IMAGE_NAME:latest
+          #fi
       - name: Install Apptainer
         run: |
           sudo apt install -y software-properties-common
@@ -89,7 +90,8 @@ jobs:
         run: |
           apptainer build container.sif docker-daemon://$DOCKER_IMAGE_NAME:$TAG
           apptainer push container.sif oras://$APPTAINER_IMAGE_NAME:$TAG
-          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
-            apptainer push container.sif oras://$APPTAINER_IMAGE_NAME:latest
-          fi
+          #TODO: Restore this if block after testing is complete
+          #if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
+          apptainer push container.sif oras://$APPTAINER_IMAGE_NAME:latest
+          #fi
