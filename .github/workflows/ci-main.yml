@@ -6,16 +6,12 @@ on:
   
 jobs:
 
-  # NOTE: 'anchore-scan' is disabled for now since it is only supported on
-  #       public repos with the free GitHub plan. 
-  #anchore-scan:
-  #  uses: ./.github/workflows/anchore-scan.yml
-  #  if: github.ref == 'refs/heads/main'
+  anchore-scan:
+    uses: ./.github/workflows/anchore-scan.yml
+    if: github.ref == 'refs/heads/main'
 
   tag-container-push:
     uses: ./.github/workflows/tag-container-push.yml
-    # NOTE: The dependency on 'anchore-scan' has been disabled for now; see
-    #       the above comment regarding 'anchore-scan' for further info.
-    #needs: [anchore-scan]
+    needs: [anchore-scan]
     if: github.ref == 'refs/heads/main'
 
