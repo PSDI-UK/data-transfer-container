@@ -1,12 +1,17 @@
 #
 # This action does the following:
 # 1) Creates a new release containing the repository source code, tagging the
-#    release with an appropriate version number, and publishing it on the Github project
+#    release with an appropriate version tag, and publishing it on the GitHub project
 #    page
-# 2) Build a docker container image, tagging the release with an appropriate version number,
-#    and publishing it on the Github project page
-# 3) Build an apptainer container image, tagging the release with an appropriate version number,
-#    and publishing it on the Github project page
+# 2) Build a docker container image, tagging the release with an appropriate version tag,
+#    and publishing it on the GitHub project page
+# 3) Build an apptainer container image, tagging the release with an appropriate version tag,
+#    and publishing it on the GitHub project page
+# 4) If the version tag for an image matches the regex '^v[0-9]+\.[0-9]+\.[0-9]+$', i.e. it
+#    corresponds to a 'release' version, then additionally tag the container image with the
+#    'latest' tag and publish it on the GitHub project page. Note that this applies to
+#    both docker and apptainer images
+#
 #
 # Notes:
 # - The version number is incremented every release as described in
@@ -69,19 +74,18 @@ jobs:
         run: |
           docker build -t $DOCKER_IMAGE_NAME:$TAG .
           docker push $DOCKER_IMAGE_NAME:$TAG
-          #TODO: Restore this if block after testing is complete
-          #if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-          echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
-          docker tag $DOCKER_IMAGE_NAME:$TAG $DOCKER_IMAGE_NAME:latest
-          docker push $DOCKER_IMAGE_NAME:latest
-          #fi
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
+            docker tag $DOCKER_IMAGE_NAME:$TAG $DOCKER_IMAGE_NAME:latest
+            docker push $DOCKER_IMAGE_NAME:latest
+          fi
       - name: Install Apptainer
         run: |
           sudo apt install -y software-properties-common
           sudo add-apt-repository -y ppa:apptainer/ppa
           sudo apt install -y apptainer
           apptainer --version
-      - name: Build Apptainer image from the Docker image
+      - name: Build Apptainer image from the Docker image and push with version tags
         env:
           # Note that these are the names of the images *without the tag*
           DOCKER_IMAGE_NAME: "ghcr.io/psdi-uk/data-transfer-container/data-transfer"
@@ -90,8 +94,7 @@ jobs:
         run: |
           apptainer build container.sif docker-daemon://$DOCKER_IMAGE_NAME:$TAG
           apptainer push container.sif oras://$APPTAINER_IMAGE_NAME:$TAG
-          #TODO: Restore this if block after testing is complete
-          #if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-          echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
-          apptainer push container.sif oras://$APPTAINER_IMAGE_NAME:latest
-          #fi
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Detected $TAG corresponds to a release version. Assigning image 'latest' tag"
+            apptainer push container.sif oras://$APPTAINER_IMAGE_NAME:latest
+          fi
