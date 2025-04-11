@@ -65,6 +65,19 @@ is also assumed that the `Dockerfile` file is in the current
 directory.
 
 
+## License
+
+The code in this repository is provided under the conditions
+described in the `LICENSE` file in this repository. However, while some of this
+code describes container images or processes to build container images,
+the software license applicable to these container images will in general not be the
+same as `LICENSE`. This is because a container image typically includes binaries
+and source code from many pieces of software; the software license for a
+container image depends on the licenses of its constitutent software.
+This should be kept in mind when using any container image linked to this
+repository, or any container image built using code in this repository.
+
+
 ## Notes for developers
 
 ### CI/CD pipeline
