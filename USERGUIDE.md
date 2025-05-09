@@ -244,10 +244,14 @@ apptainer exec instance://data-transfer rclone delete ceph-remote:<bucket-name>/
 
 ## Using the container: Other Available Data Transfer Tools and Commands
 
+:construction: *This section is still under construction* :construction:
+
 As well as rclone, the container comes pre-installed with the following tools. Below
 we describe how you can use each in Docker.
 
-### s3cmd
+### s3cmd 
+
+:construction: *This section is still under construction* :construction:
 
 This is a CLI tool for working with S3-compatible object storage. Common commands for
 using this are as follows.
@@ -274,6 +278,8 @@ docker exec data-transfer-container s3cmd get s3://<bucket name>/<file name> <fo
 
 ### Cyberduck CLI (Duck)
 
+:construction: *This section is still under construction* :construction:
+
 This is a command-line interface for Cyberduck, useful for data transferring.
 Common commands for using this are as follows.
 
@@ -298,6 +304,8 @@ docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprec
 *<folder path to download> -> ex: /data
 
 ### AWS CLI
+
+:construction: *This section is still under construction* :construction:
 
 This is the official CLI for managing AWS services, including S3.
 Common commands for this are as follows.
@@ -329,6 +337,8 @@ docker exec data-transfer-container aws s3 cp s3://<bucket-name>/<file name> <fo
 *<folder path to download> -> ex: /data
 
 ## Best Practices
+
+:construction: *This section is still under construction* :construction:
 
 Always ensure the required environment variables (`ACCESS_KEY and `SECRET_KEY`) are correctly set before starting the container.
 

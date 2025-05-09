@@ -1,11 +1,12 @@
 # PSDI data transfer container image
 
-This repository houses machinery for building a container image for
-data transfer and synchronisation tools.
+This repository houses machinery for building container images for
+data transfer and synchronisation tools. Moreover the GitHub Container
+Registry linked to this repository houses the container images themselves.
 
 ## User documentation 
 
-See the [user guide]{USERGUIDE.md).
+See the [user guide](USERGUIDE.md).
 
 ## License
 
