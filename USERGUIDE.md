@@ -249,6 +249,10 @@ apptainer exec instance://data-transfer rclone delete ceph-remote:<bucket-name>/
 As well as rclone, the container comes pre-installed with the following tools. Below
 we describe how you can use each in Docker.
 
+In what follows we assume, as is the case in the example `docker run` command given
+[above](#running-the-container), that the directory `<host-data-dir>` on the host is mounted to
+the `/data` directory within the container.
+
 ### s3cmd 
 
 :construction: *This section is still under construction* :construction:
@@ -263,18 +267,17 @@ docker exec data-transfer-container s3cmd ls s3://<bucket-name>
 ```
 
 #### Upload file to bucket
-
+The command to upload a file `<file-name>` within the `<host-data-dir>` directory on the host to the bucket is
 ```
-docker exec data-transfer-container s3cmd put <file-path-to-upload> s3://<bucket-name>
+docker exec data-transfer-container s3cmd put /data/<file-name> s3://<bucket-name>
 ```
-*<file path to upload> -> ex: /data/<file name>
 
 #### Download file from bucket
-
+To download a file `<remote-file-name>` from the bucket to `<host-data-dir>/<local-file-name>`
+on the host of your local system the command is 
 ```
-docker exec data-transfer-container s3cmd get s3://<bucket name>/<file name> <folder path of local directory>/<file name> 
+docker exec data-transfer-container s3cmd get s3://<bucket name>/<file-name> /data/<local-file-name>
 ```
-*<folder path of local directory> -> ex: /data/
 
 ### Cyberduck CLI (Duck)
 
@@ -284,24 +287,23 @@ This is a command-line interface for Cyberduck, useful for data transferring.
 Common commands for using this are as follows.
 
 #### List bucket contents
-
+To list the contents of the bucket the command is
 ```
-docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile --username ACCESS_KEY --password SECRET_KEY --list s3://ACCESS_KEY@s3.echo.stfc.ac.uk/<bucket name>/
+docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile --username ACCESS_KEY --password SECRET_KEY --list s3://ACCESS_KEY@s3.echo.stfc.ac.uk/<bucket-name>/
 ```
 
 #### Upload file to bucket
-
+To upload a file `<file-name>` within the `<host-data-dir>` directory on the host to the bucket is
 ```
-docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile --username ACCESS_KEY --password SECRET_KEY --upload s3://ACCESS_KEY@s3.echo.stfc.ac.uk/<bucket name> <file path of upload>/<file name>
+docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile --username ACCESS_KEY --password SECRET_KEY --upload s3://ACCESS_KEY@s3.echo.stfc.ac.uk/<bucket name> /data/<file-name>
 ```
-*<file path of upload> -> ex: /data
 
 #### Download file from bucket
-
+To download a file `<remote-file-name>` from the bucket to `<host-data-dir>/<local-file-name>`
+on the host of your local system the command is 
 ```
-docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile --username ACCESS_KEY --password SECRET_KEY --download s3://ACCESS_KEY@s3.echo.stfc.ac.uk/<bucket name>/<file name that you want to download>  <folder path to download>
+docker exec data-transfer-container duck --profile /app/.duck/profiles/S3-deprecatedprofile.cyberduckprofile --username ACCESS_KEY --password SECRET_KEY --download s3://ACCESS_KEY@s3.echo.stfc.ac.uk/<bucket name>/<remote-file-name>  /data/<local-file-name>
 ```
-*<folder path to download> -> ex: /data
 
 ### AWS CLI
 
@@ -323,18 +325,17 @@ docker exec data-transfer-container aws s3 ls s3://<bucket-name> --endpoint http
 ```
 
 #### Upload file to bucket
-
+The command to upload a file `<file-name>` within the `<host-data-dir>` directory on the host to the bucket is
 ```
-docker exec data-transfer-container aws s3 cp <file path to upload>/<file name> s3://<bucket-name>/ --endpoint https://s3.echo.stfc.ac.uk
+docker exec data-transfer-container aws s3 cp /data/<file-name> s3://<bucket-name>/ --endpoint https://s3.echo.stfc.ac.uk
 ```
-*<file path of upload> -> ex: /data
 
 #### Download file from bucket
-
+To download a file `<remote-file-name>` from the bucket to `<host-data-dir>/<local-file-name>`
+on the host of your local system the command is 
 ```
-docker exec data-transfer-container aws s3 cp s3://<bucket-name>/<file name> <folder path to download> --endpoint https://s3.echo.stfc.ac.uk
+docker exec data-transfer-container aws s3 cp s3://<bucket-name>/<remote-file-name> /data/<local-file-name> --endpoint https://s3.echo.stfc.ac.uk
 ```
-*<folder path to download> -> ex: /data
 
 ## Best Practices
 
